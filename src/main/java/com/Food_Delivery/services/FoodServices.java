@@ -1,18 +1,18 @@
 package com.example.fooddelivery.service;
 
-import com.example.fooddelivery.entity.FoodItem;
-import com.example.fooddelivery.repository.FoodItemRepository;
+import com.Food_Delivery.entity.FoodEntity;
+import com.Food_Delivery.repository.FoodRep;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FoodItemService {
+public class FoodServices {
 
-    private final FoodItemRepository repository;
+    private final FoodRep repository;
 
-    public FoodItemService(FoodItemRepository repository) {
+    public FoodService(FoodItemRepository repository) {
         this.repository = repository;
     }
 
