@@ -1,4 +1,4 @@
-package com.example.fooddelivery.service;
+package com.Food_Delivery.services;
 
 import com.Food_Delivery.entity.FoodEntity;
 import com.Food_Delivery.repository.FoodRep;
@@ -12,22 +12,27 @@ public class FoodServices {
 
     private final FoodRep repository;
 
-    public FoodService(FoodItemRepository repository) {
+    // Constructor Injection
+    public FoodServices(FoodRep repository) {
         this.repository = repository;
     }
 
-    public List<FoodItem> getAllItems() {
+    // Get all food items
+    public List<FoodEntity> getAllItems() {
         return repository.findAll();
     }
 
-    public Optional<FoodItem> getItemById(Long id) {
+    // Get food item by id
+    public Optional<FoodEntity> getItemById(Long id) {
         return repository.findById(id);
     }
 
-    public FoodItem saveItem(FoodItem item) {
+    // Save new food item
+    public FoodEntity saveItem(FoodEntity item) {
         return repository.save(item);
     }
 
+    // Delete food item
     public void deleteItem(Long id) {
         repository.deleteById(id);
     }

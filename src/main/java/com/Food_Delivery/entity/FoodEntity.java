@@ -1,6 +1,5 @@
 package com.Food_Delivery.entity;
 
-
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
