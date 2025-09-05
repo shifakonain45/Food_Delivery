@@ -1,58 +1,55 @@
 package com.Food_Delivery.controller;
 
 import com.Food_Delivery.entity.FoodEntity;
-import com.Food_Delivery.services.FoodServices;
+import com.Food_Delivery.service.FoodService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/food")
+@RequestMapping("/api/foods")
+@Tag(name = "Food API", description = "Operations related to food items")
 public class FoodController {
 
-    private final FoodServices foodServices;
+    private final FoodService foodService;
 
-    public FoodController(FoodServices foodServices) {
-        this.foodServices = foodServices;
+    public FoodController(FoodService foodService) {
+        this.foodService = foodService;
     }
 
-    // ✅ Create new food item
+    @GetMapping
+    @Operation(summary = "Get all food items")
+    public List<FoodEntity> getAllFoods() {
+        return foodService.getAllFoods();
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a food item by ID")
+    public ResponseEntity<FoodEntity> getFoodById(@PathVariable Long id) {
+        return foodService.getFoodById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
     @PostMapping
     public FoodEntity createFood(@RequestBody FoodEntity food) {
-        return foodServices.saveItem(food);
+        food.setId(null); // ✅ force Hibernate to treat it as new
+        return foodService.saveFood(food);
     }
-
-    // ✅ Get all food items
-    @GetMapping
-    public List<FoodEntity> getAllFood() {
-        return foodServices.getAllItems();
-    }
-
-    // ✅ Get one food item by ID
-    @GetMapping("/{id}")
-    public FoodEntity getFoodById(@PathVariable Long id) {
-        return foodServices.getItemById(id)
-                .orElseThrow(() -> new RuntimeException("Food item not found with id " + id));
-    }
-
-    // ✅ Update food item
+    
     @PutMapping("/{id}")
-    public FoodEntity updateFood(@PathVariable Long id, @RequestBody FoodEntity foodDetails) {
-        FoodEntity food = foodServices.getItemById(id)
-                .orElseThrow(() -> new RuntimeException("Food item not found with id " + id));
-
-        food.setName(foodDetails.getName());
-        food.setPrice(foodDetails.getPrice());
-        food.setDescription(foodDetails.getDescription());
-        food.setAvailable(foodDetails.getAvailable());
-
-        return foodServices.saveItem(food);
+    @Operation(summary = "Update a food item by ID")
+    public ResponseEntity<FoodEntity> updateFood(@PathVariable Long id, @RequestBody FoodEntity updatedFood) {
+        return ResponseEntity.ok(foodService.updateFood(id, updatedFood));
     }
 
-    // ✅ Delete food item
     @DeleteMapping("/{id}")
-    public String deleteFood(@PathVariable Long id) {
-        foodServices.deleteItem(id);
-        return "Food item deleted with id: " + id;
+    @Operation(summary = "Delete a food item by ID")
+    public ResponseEntity<Void> deleteFood(@PathVariable Long id) {
+        foodService.deleteFood(id);
+        return ResponseEntity.noContent().build();
     }
 }
